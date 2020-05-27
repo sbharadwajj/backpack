@@ -75,4 +75,51 @@ make install-dev
     - Check docstring description matches definition: [`darglint`](https://github.com/terrencepreilly/darglint) ([`darglint` config](.darglint))
 - Optional [`pre-commit`](https://github.com/pre-commit/pre-commit) hooks [ `pre-commit` config ](.pre-commit-config.yaml)
 
+
+## How to add new layers
+
+- Step 1:
+  - It is always advised to create a new branch before making changes to your forked version of backPACK. 
+  - Make sure your forked repository is updated with the current version of backPACK. This repository changes dynamically and some of these changes are relevant to the entire framework. It is advised to `git pull upstream origin/branch-name` before making your own changes.
+  - Once your new branch is ready and the repository is even with backPACK, run the tests to make sure everything is smooth.
+  ```bash
+    cd backpack
+    make test
+  ```
+  - After the tests have passed, your forked version is even with backPACK and your new branch is ready, we can go to step 2.
+
+- Step 2:
+  - First step is to go through the documentation of parent classes listed below and identify the one your layer belongs to, i.e 
+    - BaseDerivatives : `backpack/core/derivatives/basederivatives.py`
+    - BaseParameterDerivatives : `backpack/core/derivatives/basederivatives.py`
+    - BaseLossDerivatives : `backpack/core/derivatives/basederivatives.py`
+    - ElementwiseDerivatives: `backpack/core/derivatives/elementwisederivatives.py`
+  - It is advised to create a new file in the folder ` backpack/core/derivatives/` with the name of your layer and add your layer in that file.
+  - Import all the necessary packages and create a child class which inherits the selected parent class. 
+  - The first method which is necessary to implement is the `get_module()`, which returns your layer as a `torch.nn` module. 
+  - Additionally, add this new layer class in `backpack/core/derivatives/__init__.py`. This is very important because this is how the layer is recognized by other backPACK modules and your new layer can be used. 
+
+- Step 3:
+  - This step varies for different parent classes. If your parent class is either of `BaseDerivatives, BaseParameterDerivatives, ElementwiseDerivatives`, it is compulsory to implement the method `df()` which is the first derivative of the layer. It is also necessary to indicate whether the second derivatives exist by setting the method `hessian_is_zero()` to True/False. If the second derivatives exist, implement the method in `d2f()`. 
+  - The necessary step 3 for `BaseLossDerivatives` will be added shortly. 
+
+- Step 4:
+  - After adding the modules in your class from step 2 and step 3 it is crucial to check if the implementation is correct. For this purpose, we need to create some tests. Tests for activation function is explained here and the others are similar.
+  ```bash
+  cd test/core/derivatives/
+  geddit activation_settings.py
+  ```
+  - There are different files containing test settings for different layer categories, namely: `activation/loss/layer/pooling_settings.py` and each of these contains an example and documentation regarding how to add tests for your own layer. 
+  - Add your test accordingly and for each setting add `id_prefix: layer-name`, Eg: `id_prefix: softmax` (This step is optional and only for ease of testing).
+  - After adding your test setting, run (from the above example):
+  ```bash
+  pytest -vx . -k "softmax"
+  ```
+
+- Step 5:
+  - What if your test fails? These are some common and possible errors:
+    - Check for the size of your tensor for the methods you have implemented. 
+    - Re-check if the parent class is the correct one.
+    - Check if the implementation of your derivatives is the correct one. 
+    
 ###### _BackPACK is not endorsed by or affiliated with Facebook, Inc. PyTorch, the PyTorch logo and any related marks are trademarks of Facebook, Inc._
