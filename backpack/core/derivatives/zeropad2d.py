@@ -28,19 +28,32 @@ class ZeroPad2dDerivatives(BaseDerivatives):
         return result.view(in_features, in_features)
 
     def _jac_t_mat_prod(self, module, g_inp, g_out, mat):
-        (W_top, W_bottom), (H_bottom, H_top) = self.__unpad_indices(module)
-        return mat[:, :, :, W_top:W_bottom, H_bottom:H_top]
+        if module.output.ndim == 3:           
+            (D_top, D_bottom) = self.__unpad_indices(module)
+            return mat[:, :, :, D_bottom:D_top]
+        elif module.output.ndim == 4:
+            (W_top, W_bottom), (H_bottom, H_top) = self.__unpad_indices(module)
+            return mat[:, :, :, W_top:W_bottom, H_bottom:H_top]
 
     def __unpad_indices(self, module):
-        _, _, H_out, W_out = module.output.shape
-        pad_left, pad_right, pad_top, pad_bottom = module.padding
+        if module.output.ndim == 3:
+            _, _, D_out = module.output.shape
+            pad_left, pad_right, _, _ = module.padding
 
-        H_bottom, H_top = pad_left, W_out - pad_right
-        W_top, W_bottom = pad_top, H_out - pad_bottom
+            D_bottom, D_top = pad_left, D_out - pad_right
 
-        return (W_top, W_bottom), (H_bottom, H_top)
+            return (D_top, D_bottom)
+        elif module.output.ndim == 4:
+            _, _, H_out, W_out = module.output.shape
+            pad_left, pad_right, pad_top, pad_bottom = module.padding
+
+            H_bottom, H_top = pad_left, W_out - pad_right
+            W_top, W_bottom = pad_top, H_out - pad_bottom
+
+            return (W_top, W_bottom), (H_bottom, H_top)
 
     def _jac_mat_prod(self, module, g_inp, g_out, mat):
+        import pdb; pdb.set_trace()
         mat = eingroup("v,n,c,h,w->vn,c,h,w", mat)
         pad_mat = functional.pad(mat, module.padding, "constant", module.value)
         return self.reshape_like_output(pad_mat, module)

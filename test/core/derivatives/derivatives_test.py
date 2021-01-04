@@ -35,22 +35,22 @@ CONVOLUTION_FAIL_PROBLEMS = make_test_problems(CONVOLUTION_FAIL_SETTINGS)
 CONVOLUTION_FAIL_IDS = [problem.make_id() for problem in CONVOLUTION_FAIL_PROBLEMS]
 
 
-@pytest.mark.parametrize("problem", NO_LOSS_PROBLEMS, ids=NO_LOSS_IDS)
-def test_jac_mat_prod(problem, V=3):
-    """Test the Jacobian-matrix product.
+# @pytest.mark.parametrize("problem", NO_LOSS_PROBLEMS, ids=NO_LOSS_IDS)
+# def test_jac_mat_prod(problem, V=3):
+#     """Test the Jacobian-matrix product.
 
-    Args:
-        problem (DerivativesProblem): Problem for derivative test.
-        V (int): Number of vectorized Jacobian-vector products.
-    """
-    problem.set_up()
-    mat = torch.rand(V, *problem.input_shape).to(problem.device)
+#     Args:
+#         problem (DerivativesProblem): Problem for derivative test.
+#         V (int): Number of vectorized Jacobian-vector products.
+#     """
+#     problem.set_up()
+#     mat = torch.rand(V, *problem.input_shape).to(problem.device)
 
-    backpack_res = BackpackDerivatives(problem).jac_mat_prod(mat)
-    autograd_res = AutogradDerivatives(problem).jac_mat_prod(mat)
+#     backpack_res = BackpackDerivatives(problem).jac_mat_prod(mat)
+#     autograd_res = AutogradDerivatives(problem).jac_mat_prod(mat)
 
-    check_sizes_and_values(autograd_res, backpack_res)
-    problem.tear_down()
+#     check_sizes_and_values(autograd_res, backpack_res)
+#     problem.tear_down()
 
 
 @pytest.mark.parametrize("problem", NO_LOSS_PROBLEMS, ids=NO_LOSS_IDS)
@@ -66,7 +66,7 @@ def test_jac_t_mat_prod(problem, V=3):
 
     backpack_res = BackpackDerivatives(problem).jac_t_mat_prod(mat)
     autograd_res = AutogradDerivatives(problem).jac_t_mat_prod(mat)
-
+    # import pdb; pdb.set_trace()
     check_sizes_and_values(autograd_res, backpack_res)
     problem.tear_down()
 

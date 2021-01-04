@@ -20,12 +20,12 @@ from test.core.derivatives.padding_settings import PADDING_SETTINGS
 from test.core.derivatives.pooling_settings import POOLING_SETTINGS
 
 SETTINGS = []
-
-SETTINGS.extend(
-    ACTIVATION_SETTINGS
-    + CONVOLUTION_SETTINGS
-    + LINEAR_SETTINGS
-    + LOSS_SETTINGS
-    + PADDING_SETTINGS
-    + POOLING_SETTINGS
-)
+SETTINGS.extend(PADDING_SETTINGS)
+# SETTINGS.extend(
+#     ACTIVATION_SETTINGS
+#     + CONVOLUTION_SETTINGS
+#     + LINEAR_SETTINGS
+#     + LOSS_SETTINGS
+#     + PADDING_SETTINGS
+#     + POOLING_SETTINGS
+# )

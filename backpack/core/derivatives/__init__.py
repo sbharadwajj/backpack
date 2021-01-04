@@ -20,6 +20,7 @@ from torch.nn import (
     Tanh,
     ZeroPad2d,
 )
+from torch.nn.functional import pad
 
 from .avgpool2d import AvgPool2DDerivatives
 from .conv1d import Conv1DDerivatives
@@ -41,6 +42,7 @@ from .selu import SELUDerivatives
 from .sigmoid import SigmoidDerivatives
 from .tanh import TanhDerivatives
 from .zeropad2d import ZeroPad2dDerivatives
+from .zeropad1d import ZeroPad1dDerivatives
 
 derivatives_for = {
     Linear: LinearDerivatives,
@@ -63,4 +65,5 @@ derivatives_for = {
     SELU: SELUDerivatives,
     CrossEntropyLoss: CrossEntropyLossDerivatives,
     MSELoss: MSELossDerivatives,
+    pad: ZeroPad1dDerivatives
 }

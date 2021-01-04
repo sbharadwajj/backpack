@@ -29,18 +29,23 @@ example = {
     "seed": 0,  # optional
     "id_prefix": "padding-example",  # optional
 }
-PADDING_SETTINGS.append(example)
+# PADDING_SETTINGS.append(example)
 ###############################################################################
 #                                test settings                                #
 ###############################################################################
 
 PADDING_SETTINGS += [
+    # {
+    #     "module_fn": lambda: torch.nn.ZeroPad2d(3),
+    #     "input_fn": lambda: torch.rand(size=(2, 3, 4, 5)),
+    # },
+    # {
+    #     "module_fn": lambda: torch.nn.ZeroPad2d(5),
+    #     "input_fn": lambda: torch.rand(size=(4, 3, 4, 5)),
+    # },
     {
-        "module_fn": lambda: torch.nn.ZeroPad2d(3),
-        "input_fn": lambda: torch.rand(size=(2, 3, 4, 5)),
-    },
-    {
-        "module_fn": lambda: torch.nn.ZeroPad2d(5),
+        "module_fn": lambda: torch.nn.functional.pad(torch.rand(size=(4, 3, 4, 5)), pad=(5,5,5,5)),
         "input_fn": lambda: torch.rand(size=(4, 3, 4, 5)),
+
     },
 ]
